@@ -24,16 +24,28 @@ def get_posts():
 
 @app.get("/users")
 def get_users():
-    cursor = mysql_conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM utilisateurs")
-    return cursor.fetchall()
+    try:
+        if not mysql_conn.is_connected():
+            mysql_conn.reconnect(attempts=3, delay=2)
+            
+        # Ajoute buffered=True ici
+        cursor = mysql_conn.cursor(dictionary=True, buffered=True) 
+        cursor.execute("SELECT * FROM utilisateurs")
+        result = cursor.fetchall()
+        
+        cursor.close() # Très important pour libérer la connexion
+        return result
+    except Exception as e:
+        return {"error": str(e)}
 
 @app.get("/health")
 def health():
     try:
         mongo_db.posts.count_documents({})
-        cursor = mysql_conn.cursor()
-        cursor.execute("SELECT 1")
+        # Utilise un curseur contextuel pour garantir la fermeture
+        with mysql_conn.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            cursor.fetchone() # On lit le résultat pour vider le flux
         return {"status": "OK"}
-    except:
+    except Exception:
         return {"status": "ERROR"}
