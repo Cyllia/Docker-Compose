@@ -1,0 +1,4 @@
+fastapi
+uvicorn
+pymongo
+mysql-connector-python
