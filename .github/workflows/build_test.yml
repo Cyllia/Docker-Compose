@@ -22,3 +22,20 @@ jobs:
             run: cd api && docker build -t docker-compose-api:1.0.0 -f ./Dockerfile .
           - name: Build image for scanning
             run: cd mongo && docker build -t docker-compose-mongo:1.0.0 -f ./Dockerfile .
+          - name: Docker Scout Scan
+            uses: docker/scout-action@v1
+            with:
+              command: cves
+              image: docker-compose-api:1.0.0
+              file: ./api/Dockerfile
+              only-severities: critical,high
+              exit-code: true
+          - name: Docker Scout Scan
+            uses: docker/scout-action@v1
+            with:
+              command: cves
+              image: docker-compose-mongo:1.0.0
+              file: ./mongo/Dockerfile
+              only-severities: critical,high
+              exit-code: true
+
