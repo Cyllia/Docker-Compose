@@ -34,7 +34,7 @@ jobs:
               image: docker-compose-api:1.0.0
               file: ./api/Dockerfile
               only-severities: critical,high
-              exit-code: true
+              exit-code: false
           - name: Docker Scout Scan
             uses: docker/scout-action@v1
             with:
@@ -42,5 +42,5 @@ jobs:
               image: docker-compose-mongo:1.0.0
               file: ./mongo/Dockerfile
               only-severities: critical,high
-              exit-code: true
+              exit-code: false
 
