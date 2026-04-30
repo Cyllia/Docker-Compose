@@ -43,4 +43,4 @@ jobs:
               file: ./mongo/Dockerfile
               only-severities: critical,high
               exit-code: false
-
+  
